@@ -14,6 +14,6 @@ class MainActivity : AppCompatActivity() {
 
         requestWindowFeature(FEATURE_NO_TITLE)
 
-//        setContentView(R.layout.activity_main)
+        setContentView(GameSurface(this))
     }
 }

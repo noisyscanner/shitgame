@@ -4,12 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameObject.Direction.*
-import java.lang.Math.pow
-import kotlin.math.sqrt
+import uk.co.bradreed.shitgame.GameSurface
+import uk.co.bradreed.shitgame.Vector
+import java.lang.Math.*
 
-data class Vector(var x: Int, var y: Int)
-
-class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int, y, Int) : GameObject(image, 4, 3, x, y) {
+class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int, y: Int) : GameObject(image, 4, 3, x, y) {
     companion object {
         const val VELOCITY = 0.1f
     }
@@ -26,16 +25,13 @@ class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int
 
     private var lastDrawNanoTime = -1L
 
-    val moveBitmaps: Array<Bitmap>
+    val currentMoveBitmap: Bitmap
         get() = when (rowUsing) {
             ROW_BOTTOM_TO_TOP -> bottomToTops
             ROW_LEFT_TO_RIGHT -> leftToRights
             ROW_RIGHT_TO_LEFT -> rightToLefts
             ROW_TOP_TO_BOTTOM -> topToBottoms
-        }
-
-    val currentMoveBitmap: Bitmap
-        get() = moveBitmaps[colUsing]
+        }[colUsing]
 
     fun update() {
         colUsing++
@@ -68,6 +64,32 @@ class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int
         } else if (x > gameSurface.width - width) {
             x = gameSurface.width - width
             movingVector.x = -movingVector.x
+        }
+
+        if (y < 0) {
+            y = 0
+            movingVector.y = -movingVector.y
+        } else if (y > gameSurface.height - height) {
+            y = gameSurface.height - height
+            movingVector.y = -movingVector.y
+        }
+
+        rowUsing = if (movingVector.x > 0) {
+            if (movingVector.y > 0 && abs(movingVector.x) < abs(movingVector.y)) {
+                ROW_TOP_TO_BOTTOM
+            } else if (movingVector.y < 0 && abs(movingVector.x) < abs(movingVector.y)) {
+                ROW_BOTTOM_TO_TOP
+            } else {
+                ROW_LEFT_TO_RIGHT
+            }
+        } else {
+            if (movingVector.y > 0 && Math.abs(movingVector.x) < Math.abs(movingVector.y)) {
+                ROW_TOP_TO_BOTTOM
+            } else if (movingVector.y < 0 && Math.abs(movingVector.x) < Math.abs(movingVector.y)) {
+                ROW_BOTTOM_TO_TOP
+            } else {
+                ROW_RIGHT_TO_LEFT
+            }
         }
     }
 
