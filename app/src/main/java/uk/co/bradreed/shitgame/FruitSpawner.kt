@@ -15,13 +15,11 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
     private val fruitTypes = listOf(Orange::class, Banana::class)
 
     var fruit = listOf<Fruit>()
+    private val visibleFruit get() = fruit.filter { !it.destroyMe }
 
     private lateinit var bitmaps: Map<KClass<out Fruit>, Bitmap>
 
-    private val visibleFruit get() = fruit.filter { !it.destroyMe }
-
     private var running = false
-
     private var millisBetween = 1000L
 
     override fun run() {
@@ -49,15 +47,10 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
 
     private fun createFruit(): Fruit? {
         val fruitType = fruitTypes[Random().nextInt(fruitTypes.size)]
-        bitmaps[fruitType]?.let { bitmap ->
-            return when (fruitType) {
-                Orange::class -> Orange(surface, bitmap, getRandomSpawnPointForBitmap(bitmap))
-                Banana::class -> Banana(surface, bitmap, getRandomSpawnPointForBitmap(bitmap))
-                else -> null
-            }
-        }
 
-        return null
+        return bitmaps[fruitType]?.let { bitmap ->
+            fruitType.constructors.first().call(surface, bitmap, getRandomSpawnPointForBitmap(bitmap))
+        }
     }
 
     private fun getRandomSpawnPointForBitmap(bitmap: Bitmap) = Point(
@@ -72,7 +65,7 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
         }
     }
 
-    private fun loadBitmaps(): Map<KClass<out Fruit>, Bitmap> = fruitTypes.map { fruitType ->
+    private fun loadBitmaps() = fruitTypes.map { fruitType ->
         val resId = fruitType.java.getDeclaredField("DRAWABLE").get(null) as Int
 
         fruitType to BitmapFactory

@@ -10,6 +10,8 @@ class Trolley(private val bitmap: Bitmap, var location: Point) : GameObject {
         const val DRAWABLE = R.drawable.trolley
     }
 
+    val width get() = bitmap.width
+
     override var destroyMe = false
 
     override fun update() {}

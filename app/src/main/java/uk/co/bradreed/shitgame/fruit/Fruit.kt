@@ -5,11 +5,13 @@ import android.graphics.Canvas
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameSurface
 import uk.co.bradreed.shitgame.structs.Point
+import uk.co.bradreed.shitgame.structs.Vector
 
 abstract class Fruit(private var gameSurface: GameSurface,
                      private val bitmap: Bitmap,
-                     protected var location: Point) : GameObject {
+                     private var location: Point) : GameObject {
     abstract val velocity: Double
+    abstract val movingVector: Vector
 
     private var lastDrawNanoTime: Long = -1L
 
@@ -53,12 +55,16 @@ abstract class Fruit(private var gameSurface: GameSurface,
 
     private val isCaught: Boolean
         get() {
+            val trolleyWidth = gameSurface.trolley.width
             val trolleyLoc = gameSurface.trolley.location
 
             return location.y >= trolleyLoc.y - bitmap.height &&
                     location.x >= trolleyLoc.x &&
-                    location.x <= trolleyLoc.x + bitmap.width - bitmap.width
+                    location.x <= trolleyLoc.x + trolleyWidth - bitmap.width
         }
 
-    abstract fun getNextLocation(distanceTravelled: Double): Point
+    private fun getNextLocation(distanceTravelled: Double) = location + Point(
+            x = (distanceTravelled * movingVector.x / movingVector.length).toInt(),
+            y = (distanceTravelled * movingVector.y / movingVector.length).toInt()
+    )
 }
