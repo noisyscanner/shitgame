@@ -19,6 +19,6 @@ class Trolley(private val bitmap: Bitmap, var location: Point) : GameObject {
     }
 
     fun moveTo(x: Int) {
-        location = Point(x, location.y)
+        location = location.copy(x = x)
     }
 }

@@ -93,11 +93,11 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
     }
 
     fun onCatchFruit() {
-        score = Score(score.caught + 1, score.dropped)
+        score = score.copy(caught = score.caught + 1)
     }
 
     fun onDropFruit() {
-        score = Score(score.caught, score.dropped + 1)
+        score = score.copy(dropped = score.dropped + 1)
     }
 
     private fun loadTrolley(): Trolley {
