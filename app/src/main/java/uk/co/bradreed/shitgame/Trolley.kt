@@ -12,10 +12,6 @@ class Trolley(private val bitmap: Bitmap, var location: Point) : GameObject {
 
     val width get() = bitmap.width
 
-    override var destroyMe = false
-
-    override fun update() {}
-
     override fun draw(canvas: Canvas) {
         canvas.drawBitmap(bitmap, location.x.toFloat(), location.y.toFloat(), null)
     }

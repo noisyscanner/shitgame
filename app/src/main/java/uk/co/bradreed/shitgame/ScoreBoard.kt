@@ -9,11 +9,6 @@ import uk.co.bradreed.shitgame.structs.Score
 class ScoreBoard(private val location: Point): GameObject {
     var score: Score = Score()
 
-    override var destroyMe = false
-
-    override fun update() {
-    }
-
     override fun draw(canvas: Canvas) {
         val fontSize = 50f
         val basePaint = Paint().apply {

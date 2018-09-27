@@ -10,6 +10,7 @@ import java.lang.Math.log10
 import java.lang.Math.pow
 import java.util.*
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 
 class FruitSpawner(private val surface: GameSurface) : Thread() {
     private val fruitTypes = listOf(Orange::class, Banana::class)
@@ -49,7 +50,11 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
         val fruitType = fruitTypes[Random().nextInt(fruitTypes.size)]
 
         return bitmaps[fruitType]?.let { bitmap ->
-            fruitType.constructors.first().call(surface, bitmap, getRandomSpawnPointForBitmap(bitmap))
+            fruitType.constructors.first().call(
+                    surface,
+                    bitmap,
+                    getRandomSpawnPointForBitmap(bitmap)
+            )
         }
     }
 
@@ -66,7 +71,7 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
     }
 
     private fun loadBitmaps() = fruitTypes.map { fruitType ->
-        val resId = fruitType.java.getDeclaredField("DRAWABLE").get(null) as Int
+        val resId = fruitType.findAnnotation<Sprite>()!!.layout
 
         fruitType to BitmapFactory
                 .decodeResource(surface.resources, resId)

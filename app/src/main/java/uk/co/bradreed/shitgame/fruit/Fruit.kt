@@ -15,9 +15,9 @@ abstract class Fruit(private var gameSurface: GameSurface,
 
     private var lastDrawNanoTime: Long = -1L
 
-    override var destroyMe = false
+    var destroyMe = false
 
-    override fun update() {
+    fun update() {
         val now = System.nanoTime()
 
         if (lastDrawNanoTime == -1L) {
@@ -33,19 +33,19 @@ abstract class Fruit(private var gameSurface: GameSurface,
     }
 
     override fun draw(canvas: Canvas) {
-        if (!destroyMe) {
-            if (isCaught) {
-                gameSurface.onCatchFruit()
-                destroyMe = true
-                return
-            }
+        if (destroyMe) return
 
-            if (isAtBottom) {
-                gameSurface.onDropFruit()
-                destroyMe = true
-                return
-            }
-        } else return
+        if (isCaught) {
+            gameSurface.onCatchFruit()
+            destroyMe = true
+            return
+        }
+
+        if (isAtBottom) {
+            gameSurface.onDropFruit()
+            destroyMe = true
+            return
+        }
 
         canvas.drawBitmap(bitmap, location.x.toFloat(), location.y.toFloat(), null)
         lastDrawNanoTime = System.nanoTime()
@@ -64,7 +64,7 @@ abstract class Fruit(private var gameSurface: GameSurface,
         }
 
     private fun getNextLocation(distanceTravelled: Double) = location + Point(
-            x = (distanceTravelled * movingVector.x / movingVector.length).toInt(),
-            y = (distanceTravelled * movingVector.y / movingVector.length).toInt()
+            x = (distanceTravelled * movingVector.dx / movingVector.length).toInt(),
+            y = (distanceTravelled * movingVector.dy / movingVector.length).toInt()
     )
 }

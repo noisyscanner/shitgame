@@ -2,6 +2,7 @@ package uk.co.bradreed.shitgame
 
 import android.graphics.Canvas
 import android.view.SurfaceHolder
+import kotlin.math.max
 
 class GameThread(private val gameSurface: GameSurface,
                  private val surfaceHolder: SurfaceHolder): Thread() {
@@ -33,10 +34,7 @@ class GameThread(private val gameSurface: GameSurface,
 
             // Interval to redraw game
             // (Change nanoseconds to milliseconds)
-            var waitTime = (now - startTime) / 1000000
-            if (waitTime < 10) {
-                waitTime = 10 // Millisecond
-            }
+            val waitTime = max((now - startTime) / 1000000, 10)
 
             try {
                 sleep(waitTime)
