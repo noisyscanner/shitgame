@@ -1,31 +1,29 @@
-package uk.co.bradreed.shitgame.characters
+/*package uk.co.bradreed.shitgame.objects
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameObject.Direction.*
 import uk.co.bradreed.shitgame.GameSurface
-import uk.co.bradreed.shitgame.Vector
+import uk.co.bradreed.shitgame.Point
 import java.lang.Math.*
 
 class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int, y: Int) : GameObject(image, 4, 3, x, y) {
     companion object {
-        const val VELOCITY = 0.1f
+        private const val VELOCITY = 1f
     }
 
     private var rowUsing = ROW_LEFT_TO_RIGHT
     private var colUsing = 0
 
-    private var leftToRights = Array<Bitmap>(colCount) { i -> this.createSubImageAt(ROW_LEFT_TO_RIGHT.value, i) }
-    private var rightToLefts = Array<Bitmap>(colCount) { i -> this.createSubImageAt(ROW_RIGHT_TO_LEFT.value, i) }
-    private var topToBottoms = Array<Bitmap>(colCount) { i -> this.createSubImageAt(ROW_TOP_TO_BOTTOM.value, i) }
-    private var bottomToTops = Array<Bitmap>(colCount) { i -> this.createSubImageAt(ROW_BOTTOM_TO_TOP.value, i) }
+    private var leftToRights = Array(colCount) { i -> this.createSubImageAt(ROW_LEFT_TO_RIGHT.value, i) }
+    private var rightToLefts = Array(colCount) { i -> this.createSubImageAt(ROW_RIGHT_TO_LEFT.value, i) }
+    private var topToBottoms = Array(colCount) { i -> this.createSubImageAt(ROW_TOP_TO_BOTTOM.value, i) }
+    private var bottomToTops = Array(colCount) { i -> this.createSubImageAt(ROW_BOTTOM_TO_TOP.value, i) }
 
-    var movingVector: Vector = Vector(10, 5)
+    override val movingVector: Point = Point(0, 20)
 
-    private var lastDrawNanoTime = -1L
-
-    val currentMoveBitmap: Bitmap
+    private val currentMoveBitmap: Bitmap
         get() = when (rowUsing) {
             ROW_BOTTOM_TO_TOP -> bottomToTops
             ROW_LEFT_TO_RIGHT -> leftToRights
@@ -33,7 +31,7 @@ class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int
             ROW_TOP_TO_BOTTOM -> topToBottoms
         }[colUsing]
 
-    fun update() {
+    override fun update() {
         colUsing++
         if (colUsing >= colCount) {
             colUsing = 0
@@ -54,8 +52,8 @@ class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int
         val movingVectorLength = sqrt(pow(movingVector.x.toDouble(), 2.0) + pow(movingVector.y.toDouble(), 2.0))
 
         // Set new position of character
-        x = (distance * movingVector.x / movingVectorLength).toInt()
-        y = (distance * movingVector.x / movingVectorLength).toInt()
+        x += (distance * movingVector.x / movingVectorLength).toInt()
+        y += (distance * movingVector.y / movingVectorLength).toInt()
 
         // When the game's character touches the edge of the screen, then change direction
         if (x < 0) {
@@ -93,8 +91,8 @@ class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int
         }
     }
 
-    fun draw(canvas: Canvas) {
+    override fun draw(canvas: Canvas) {
         canvas.drawBitmap(currentMoveBitmap, x.toFloat(), y.toFloat(), null)
         lastDrawNanoTime = System.nanoTime()
     }
-}
+}*/

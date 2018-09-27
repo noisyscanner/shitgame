@@ -37,7 +37,6 @@ class GameThread(private val gameSurface: GameSurface,
             if (waitTime < 10) {
                 waitTime = 10 // Millisecond
             }
-            print("Wait Time=" + waitTime)
 
             try {
                 sleep(waitTime)
@@ -46,7 +45,6 @@ class GameThread(private val gameSurface: GameSurface,
             }
 
             startTime = System.nanoTime()
-            print(".")
         }
     }
 
