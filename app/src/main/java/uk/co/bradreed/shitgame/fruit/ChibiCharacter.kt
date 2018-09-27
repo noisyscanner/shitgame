@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameObject.Direction.*
 import uk.co.bradreed.shitgame.GameSurface
-import uk.co.bradreed.shitgame.Point
+import uk.co.bradreed.shitgame.structs.Point
 import java.lang.Math.*
 
 class ChibiCharacter(private val gameSurface: GameSurface, image: Bitmap, x: Int, y: Int) : GameObject(image, 4, 3, x, y) {
