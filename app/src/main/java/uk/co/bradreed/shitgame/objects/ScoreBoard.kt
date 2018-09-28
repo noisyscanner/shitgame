@@ -1,8 +1,9 @@
-package uk.co.bradreed.shitgame
+package uk.co.bradreed.shitgame.objects
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Score
 

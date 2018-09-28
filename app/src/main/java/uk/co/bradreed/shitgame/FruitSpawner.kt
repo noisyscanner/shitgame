@@ -1,33 +1,19 @@
 package uk.co.bradreed.shitgame
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import uk.co.bradreed.shitgame.food.*
+import uk.co.bradreed.shitgame.food.FoodItem
 import uk.co.bradreed.shitgame.structs.Point
 import java.lang.Math.log10
 import java.lang.Math.pow
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
 
 typealias FoodType = KClass<out FoodItem>
 
-class FruitSpawner(private val surface: GameSurface) : Thread() {
-    private val fruitTypes = listOf(
-            Apple::class,
-            Banana::class,
-            Bread::class,
-            Broccoli::class,
-            Cheese::class,
-            Orange::class,
-            Sausage::class,
-            Strawberry::class
-    )
-    private val generator by lazy { RandomFoodGenerator(fruitTypes) }
+class FruitSpawner(private val surface: GameSurface, private val bitmaps: Map<FoodType, Bitmap?>) : Thread() {
+    private val generator by lazy { RandomFoodGenerator(bitmaps.keys.toList()) }
 
     var fruit = listOf<FoodItem>()
     private val visibleFruit get() = fruit.filter { !it.destroyMe }
-
-    private lateinit var bitmaps: Map<FoodType, Bitmap?>
 
     private var running = false
     private var millisBetween = 1000L
@@ -44,13 +30,13 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
     }
 
     override fun start() {
-        bitmaps = loadBitmaps()
         running = true
 
         super.start()
     }
 
     fun end() {
+        fruit.forEach { it.destroyMe = true }
         running = false
     }
 
@@ -77,12 +63,4 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
             millisBetween = 1000L - sub
         }
     }
-
-    private fun loadBitmaps() = fruitTypes.map { fruitType ->
-        fruitType to fruitType.findAnnotation<Sprite>()?.layout?.let { resId ->
-            BitmapFactory
-                    .decodeResource(surface.resources, resId)
-                    .scaleToWidth(surface.width / 12)
-        }
-    }.toMap()
 }

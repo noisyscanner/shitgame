@@ -6,23 +6,57 @@ import android.util.DisplayMetrics.DENSITY_DEFAULT
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import uk.co.bradreed.shitgame.food.*
+import uk.co.bradreed.shitgame.objects.GameOverView
+import uk.co.bradreed.shitgame.objects.ScoreBoard
+import uk.co.bradreed.shitgame.objects.Slider
+import uk.co.bradreed.shitgame.objects.Trolley
 import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Score
+import kotlin.reflect.full.findAnnotation
 
 
 class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
     private var gameThread: GameThread? = null
-    private var fruitSpawner = FruitSpawner(this)
+    private var fruitSpawner: FruitSpawner? = null
 
+    private val fruitTypes = listOf(
+            Apple::class,
+            Banana::class,
+            Bread::class,
+            Broccoli::class,
+            Cheese::class,
+            Orange::class,
+            Sausage::class,
+            Strawberry::class
+    )
+    private lateinit var bitmaps: Map<FoodType, Bitmap?>
+
+    private val gameOverView = GameOverView(this)
     private val slider = Slider(this)
+
     private lateinit var scoreBoard: ScoreBoard
     lateinit var trolley: Trolley
+
+    private var gameOver = false
+        set(isOver) {
+            field = isOver
+            if (isOver) {
+                stopGame()
+                gameOverView.show(score)
+            } else {
+                gameOverView.hide()
+                startGame()
+            }
+        }
 
     private var score: Score = Score()
         set(newValue) {
             field = newValue
-            fruitSpawner.setSpeedFromScore(score.caught)
+            fruitSpawner?.setSpeedFromScore(score.caught)
             scoreBoard.score = score
+
+            if (score.dropped >= 3) gameOver()
         }
 
     init {
@@ -31,7 +65,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
     }
 
     fun update() {
-        fruitSpawner.fruit.forEach { it.update() }
+        fruitSpawner?.fruit?.forEach { it.update() }
     }
 
     override fun draw(canvas: Canvas) {
@@ -39,11 +73,12 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
 
         canvas.drawColor(Color.WHITE)
 
-        fruitSpawner.fruit.forEach { it.draw(canvas) }
+        fruitSpawner?.fruit?.forEach { it.draw(canvas) }
 
         scoreBoard.draw(canvas)
         trolley.draw(canvas)
         slider.draw(canvas)
+        gameOverView.draw(canvas)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
@@ -54,7 +89,8 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         gameThread?.running = true
         gameThread?.start()
 
-        fruitSpawner.start()
+        loadBitmaps()
+        startGame()
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
@@ -64,7 +100,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         while (retry) {
             try {
                 gameThread?.running = false
-                fruitSpawner.end()
+                fruitSpawner?.end()
 
                 // Parent thread must wait until the end of GameThread.
                 gameThread?.join()
@@ -83,7 +119,12 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         val y = event.y.toInt()
 
         return when (event.action) {
-            MotionEvent.ACTION_DOWN -> slider.rect.contains(x, y)
+            MotionEvent.ACTION_DOWN -> {
+                if (gameOver) {
+                    restartGame()
+                }
+                slider.rect.contains(x, y)
+            }
             MotionEvent.ACTION_MOVE -> {
                 trolley.moveTo(x)
                 true
@@ -98,6 +139,25 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
 
     fun onDropFruit() {
         score = score.copy(dropped = score.dropped + 1)
+    }
+
+    private fun startGame() {
+        fruitSpawner = FruitSpawner(this, bitmaps)
+        fruitSpawner?.start()
+    }
+
+    private fun restartGame() {
+        score = Score()
+        gameOver = false
+    }
+
+    private fun stopGame() {
+        fruitSpawner?.end()
+        fruitSpawner = null
+    }
+
+    private fun gameOver() {
+        gameOver = true
     }
 
     private fun loadTrolley(): Trolley {
@@ -117,5 +177,15 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         val startPoint = Point(slider.rect.centerX(), slider.rect.top - trolleyBitmap.height)
 
         return Trolley(trolleyBitmap, backwardsTrolleyBitmap, startPoint)
+    }
+
+    private fun loadBitmaps() {
+        bitmaps = fruitTypes.map { fruitType ->
+            fruitType to fruitType.findAnnotation<Sprite>()?.layout?.let { resId ->
+                BitmapFactory
+                        .decodeResource(resources, resId)
+                        .scaleToWidth(width / 12)
+            }
+        }.toMap()
     }
 }
