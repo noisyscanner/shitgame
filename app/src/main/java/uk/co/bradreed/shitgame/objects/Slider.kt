@@ -1,11 +1,12 @@
 package uk.co.bradreed.shitgame.objects
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.support.v4.content.res.ResourcesCompat
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameSurface
+import uk.co.bradreed.shitgame.R
 
 class Slider(private val gameSurface: GameSurface): GameObject {
 
@@ -24,9 +25,9 @@ class Slider(private val gameSurface: GameSurface): GameObject {
         )
 
     override fun draw(canvas: Canvas) {
-        val paint = Paint()
-
-        paint.color = Color.BLUE
+        val paint = Paint().apply {
+            color = ResourcesCompat.getColor(gameSurface.resources, R.color.sainsOrange, null)
+        }
 
         canvas.drawRect(rect, paint)
     }

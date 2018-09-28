@@ -1,10 +1,11 @@
 package uk.co.bradreed.shitgame.objects
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
+import android.support.v4.content.res.ResourcesCompat
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameSurface
+import uk.co.bradreed.shitgame.R
 import uk.co.bradreed.shitgame.structs.Score
 
 class GameOverView(private val gameSurface: GameSurface) : GameObject {
@@ -13,10 +14,11 @@ class GameOverView(private val gameSurface: GameSurface) : GameObject {
 
     companion object {
         private const val TEXT_HEIGHT = 50f
-        private val paint = Paint().apply {
-            textSize = TEXT_HEIGHT
-            color = Color.BLACK
-        }
+    }
+
+    private val paint = Paint().apply {
+        textSize = TEXT_HEIGHT
+        color = ResourcesCompat.getColor(gameSurface.resources, R.color.sainsOrange, null)
     }
 
     fun show(score: Score) {

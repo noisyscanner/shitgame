@@ -82,7 +82,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        scoreBoard = ScoreBoard(Point(x = 50, y = 75))
+        scoreBoard = ScoreBoard(this, Point(x = 50, y = 75))
         trolley = loadTrolley()
 
         gameThread = GameThread(this, holder)

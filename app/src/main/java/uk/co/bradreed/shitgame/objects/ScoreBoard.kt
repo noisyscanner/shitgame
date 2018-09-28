@@ -1,13 +1,16 @@
 package uk.co.bradreed.shitgame.objects
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
+import android.support.v4.content.res.ResourcesCompat
 import uk.co.bradreed.shitgame.GameObject
+import uk.co.bradreed.shitgame.GameSurface
+import uk.co.bradreed.shitgame.R
 import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Score
 
-class ScoreBoard(private val location: Point): GameObject {
+class ScoreBoard(private val gameSurface: GameSurface,
+                 private val location: Point): GameObject {
     var score: Score = Score()
 
     override fun draw(canvas: Canvas) {
@@ -17,8 +20,12 @@ class ScoreBoard(private val location: Point): GameObject {
             isFakeBoldText = true
         }
 
-        val greenPaint = Paint(basePaint).apply { color = Color.GREEN }
-        val redPaint = Paint(basePaint).apply { color = Color.RED }
+        val greenPaint = Paint(basePaint).apply {
+            color = ResourcesCompat.getColor(gameSurface.resources, R.color.green, null)
+        }
+        val redPaint = Paint(basePaint).apply {
+            color = ResourcesCompat.getColor(gameSurface.resources, R.color.red, null)
+        }
 
         canvas.drawText("✅ ${score.caught}", location.x.toFloat(), location.y.toFloat(), greenPaint)
         canvas.drawText("❌ ${score.dropped}", location.x.toFloat(), location.y.toFloat() + fontSize, redPaint)
