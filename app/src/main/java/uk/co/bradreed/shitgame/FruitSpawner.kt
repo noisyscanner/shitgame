@@ -2,23 +2,32 @@ package uk.co.bradreed.shitgame
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import uk.co.bradreed.shitgame.fruit.Banana
-import uk.co.bradreed.shitgame.fruit.Fruit
-import uk.co.bradreed.shitgame.fruit.Orange
+import uk.co.bradreed.shitgame.food.*
 import uk.co.bradreed.shitgame.structs.Point
 import java.lang.Math.log10
 import java.lang.Math.pow
-import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
-class FruitSpawner(private val surface: GameSurface) : Thread() {
-    private val fruitTypes = listOf(Orange::class, Banana::class)
+typealias FoodType = KClass<out FoodItem>
 
-    var fruit = listOf<Fruit>()
+class FruitSpawner(private val surface: GameSurface) : Thread() {
+    private val fruitTypes = listOf(
+            Apple::class,
+            Banana::class,
+            Bread::class,
+            Broccoli::class,
+            Cheese::class,
+            Orange::class,
+            Sausage::class,
+            Strawberry::class
+    )
+    private val generator by lazy { RandomFoodGenerator(fruitTypes) }
+
+    var fruit = listOf<FoodItem>()
     private val visibleFruit get() = fruit.filter { !it.destroyMe }
 
-    private lateinit var bitmaps: Map<KClass<out Fruit>, Bitmap>
+    private lateinit var bitmaps: Map<FoodType, Bitmap?>
 
     private var running = false
     private var millisBetween = 1000L
@@ -29,9 +38,8 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
         while (running) {
             createFruit()?.let { newFruit ->
                 fruit = visibleFruit + newFruit
+                sleep(millisBetween)
             }
-
-            sleep(millisBetween)
         }
     }
 
@@ -46,15 +54,15 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
         running = false
     }
 
-    private fun createFruit(): Fruit? {
-        val fruitType = fruitTypes[Random().nextInt(fruitTypes.size)]
-
-        return bitmaps[fruitType]?.let { bitmap ->
-            fruitType.constructors.first().call(
-                    surface,
-                    bitmap,
-                    getRandomSpawnPointForBitmap(bitmap)
-            )
+    private fun createFruit(): FoodItem? {
+        return generator.randomFood?.let { foodType ->
+            bitmaps[foodType]?.let { bitmap ->
+                foodType.constructors.first().call(
+                        surface,
+                        bitmap,
+                        getRandomSpawnPointForBitmap(bitmap)
+                )
+            }
         }
     }
 
@@ -71,10 +79,10 @@ class FruitSpawner(private val surface: GameSurface) : Thread() {
     }
 
     private fun loadBitmaps() = fruitTypes.map { fruitType ->
-        val resId = fruitType.findAnnotation<Sprite>()!!.layout
-
-        fruitType to BitmapFactory
-                .decodeResource(surface.resources, resId)
-                .scaleToWidth(surface.width / 12)
+        fruitType to fruitType.findAnnotation<Sprite>()?.layout?.let { resId ->
+            BitmapFactory
+                    .decodeResource(surface.resources, resId)
+                    .scaleToWidth(surface.width / 12)
+        }
     }.toMap()
 }

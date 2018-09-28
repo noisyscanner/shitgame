@@ -1,14 +1,14 @@
 package uk.co.bradreed.shitgame
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.*
+import android.util.DisplayMetrics.DENSITY_DEFAULT
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Score
+
 
 class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
     private var gameThread: GameThread? = null
@@ -57,7 +57,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         fruitSpawner.start()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) { }
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         var retry = true
@@ -85,9 +85,9 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> slider.rect.contains(x, y)
             MotionEvent.ACTION_MOVE -> {
-                    trolley.moveTo(x)
-                    true
-                }
+                trolley.moveTo(x)
+                true
+            }
             else -> false
         }
     }
@@ -105,8 +105,17 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
                 .decodeResource(resources, Trolley.DRAWABLE)
                 .scaleToWidth(width / 6)
 
+        val backwardsTrolleyBitmap = Bitmap.createBitmap(trolleyBitmap,
+                0,
+                0,
+                trolleyBitmap.width,
+                trolleyBitmap.height,
+                Matrix().apply { preScale(-1f, 1f) },
+                false
+        ).apply { density = DENSITY_DEFAULT }
+
         val startPoint = Point(slider.rect.centerX(), slider.rect.top - trolleyBitmap.height)
 
-        return Trolley(trolleyBitmap, startPoint)
+        return Trolley(trolleyBitmap, backwardsTrolleyBitmap, startPoint)
     }
 }

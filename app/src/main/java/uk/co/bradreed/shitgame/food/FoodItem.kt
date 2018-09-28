@@ -1,17 +1,21 @@
-package uk.co.bradreed.shitgame.fruit
+package uk.co.bradreed.shitgame.food
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import uk.co.bradreed.shitgame.GameObject
 import uk.co.bradreed.shitgame.GameSurface
+import uk.co.bradreed.shitgame.random
 import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Vector
 
-abstract class Fruit(private var gameSurface: GameSurface,
-                     private val bitmap: Bitmap,
-                     private var location: Point) : GameObject {
-    abstract val velocity: Double
-    abstract val movingVector: Vector
+abstract class FoodItem(private var gameSurface: GameSurface,
+                        private val bitmap: Bitmap,
+                        private var location: Point) : GameObject {
+
+    abstract val value: Int
+
+    protected val velocity = (0.5..0.75).random()
+    protected val movingVector = Vector(0, 1)
 
     private var lastDrawNanoTime: Long = -1L
 
