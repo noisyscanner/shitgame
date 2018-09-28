@@ -13,7 +13,7 @@ class GameOverView(private val gameSurface: GameSurface) : GameObject {
     private var score: Score? = null
 
     companion object {
-        private const val TEXT_HEIGHT = 50f
+        private const val TEXT_HEIGHT = 75f
     }
 
     private val paint = Paint().apply {
@@ -43,7 +43,7 @@ class GameOverView(private val gameSurface: GameSurface) : GameObject {
     }
 
     private fun drawScore(canvas: Canvas) {
-        val text = "You scored ${score!!.caught}!"
+        val text = "You scored ${score!!.caught}${if(score!!.caught == 0) " :(" else "!"}"
 
         drawCenteredText(canvas, text, line = 1)
     }
