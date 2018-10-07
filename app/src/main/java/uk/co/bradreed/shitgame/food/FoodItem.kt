@@ -1,12 +1,12 @@
-package uk.co.bradreed.shitgame.food
+package uk.co.bradreed.trolleygame.food
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import uk.co.bradreed.shitgame.GameObject
-import uk.co.bradreed.shitgame.GameSurface
-import uk.co.bradreed.shitgame.random
-import uk.co.bradreed.shitgame.structs.Point
-import uk.co.bradreed.shitgame.structs.Vector
+import uk.co.bradreed.trolleygame.GameObject
+import uk.co.bradreed.trolleygame.GameSurface
+import uk.co.bradreed.trolleygame.random
+import uk.co.bradreed.trolleygame.structs.Point
+import uk.co.bradreed.trolleygame.structs.Vector
 
 abstract class FoodItem(private var gameSurface: GameSurface,
                         private val bitmap: Bitmap,

@@ -1,4 +1,4 @@
-package uk.co.bradreed.shitgame
+package uk.co.bradreed.trolleygame
 
 import android.content.Context
 import android.graphics.*
@@ -6,13 +6,13 @@ import android.util.DisplayMetrics.DENSITY_DEFAULT
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import uk.co.bradreed.shitgame.food.*
-import uk.co.bradreed.shitgame.objects.GameOverView
-import uk.co.bradreed.shitgame.objects.ScoreBoard
-import uk.co.bradreed.shitgame.objects.Slider
-import uk.co.bradreed.shitgame.objects.Trolley
-import uk.co.bradreed.shitgame.structs.Point
-import uk.co.bradreed.shitgame.structs.Score
+import uk.co.bradreed.trolleygame.food.*
+import uk.co.bradreed.trolleygame.objects.GameOverView
+import uk.co.bradreed.trolleygame.objects.ScoreBoard
+import uk.co.bradreed.trolleygame.objects.Slider
+import uk.co.bradreed.trolleygame.objects.Trolley
+import uk.co.bradreed.trolleygame.structs.Point
+import uk.co.bradreed.trolleygame.structs.Score
 import kotlin.reflect.full.findAnnotation
 
 

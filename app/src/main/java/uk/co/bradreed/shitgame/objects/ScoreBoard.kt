@@ -1,13 +1,13 @@
-package uk.co.bradreed.shitgame.objects
+package uk.co.bradreed.trolleygame.objects
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.support.v4.content.res.ResourcesCompat
-import uk.co.bradreed.shitgame.GameObject
-import uk.co.bradreed.shitgame.GameSurface
-import uk.co.bradreed.shitgame.R
-import uk.co.bradreed.shitgame.structs.Point
-import uk.co.bradreed.shitgame.structs.Score
+import uk.co.bradreed.trolleygame.GameObject
+import uk.co.bradreed.trolleygame.GameSurface
+import uk.co.bradreed.trolleygame.R
+import uk.co.bradreed.trolleygame.structs.Point
+import uk.co.bradreed.trolleygame.structs.Score
 
 class ScoreBoard(private val gameSurface: GameSurface,
                  private val location: Point,

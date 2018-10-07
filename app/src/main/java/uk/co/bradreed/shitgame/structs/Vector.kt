@@ -1,4 +1,4 @@
-package uk.co.bradreed.shitgame.structs
+package uk.co.bradreed.trolleygame.structs
 
 import java.lang.Math.pow
 import java.lang.Math.sqrt

@@ -1,4 +1,4 @@
-package uk.co.bradreed.shitgame
+package uk.co.bradreed.trolleygame
 
 import kotlin.reflect.full.findAnnotation
 

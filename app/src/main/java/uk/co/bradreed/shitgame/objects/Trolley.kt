@@ -1,10 +1,10 @@
-package uk.co.bradreed.shitgame.objects
+package uk.co.bradreed.trolleygame.objects
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import uk.co.bradreed.shitgame.GameObject
-import uk.co.bradreed.shitgame.R
-import uk.co.bradreed.shitgame.structs.Point
+import uk.co.bradreed.trolleygame.GameObject
+import uk.co.bradreed.trolleygame.R
+import uk.co.bradreed.trolleygame.structs.Point
 
 class Trolley(private val forwardsBitmap: Bitmap,
               private val backwardsBitmap: Bitmap,

@@ -1,3 +1,3 @@
-package uk.co.bradreed.shitgame
+package uk.co.bradreed.trolleygame
 
 annotation class Sprite(val layout: Int, val probability: Double)

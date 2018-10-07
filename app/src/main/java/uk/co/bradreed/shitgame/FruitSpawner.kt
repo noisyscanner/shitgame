@@ -1,8 +1,8 @@
-package uk.co.bradreed.shitgame
+package uk.co.bradreed.trolleygame
 
 import android.graphics.Bitmap
-import uk.co.bradreed.shitgame.food.FoodItem
-import uk.co.bradreed.shitgame.structs.Point
+import uk.co.bradreed.trolleygame.food.FoodItem
+import uk.co.bradreed.trolleygame.structs.Point
 import java.lang.Math.log10
 import java.lang.Math.pow
 import kotlin.reflect.KClass
