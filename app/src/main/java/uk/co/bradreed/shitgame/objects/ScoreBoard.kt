@@ -10,8 +10,8 @@ import uk.co.bradreed.shitgame.structs.Point
 import uk.co.bradreed.shitgame.structs.Score
 
 class ScoreBoard(private val gameSurface: GameSurface,
-                 private val location: Point): GameObject {
-    var score: Score = Score()
+                 private val location: Point,
+                 var score: Score): GameObject {
 
     override fun draw(canvas: Canvas) {
         val fontSize = 50f

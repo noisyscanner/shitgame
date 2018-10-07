@@ -30,7 +30,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
             Sausage::class,
             Strawberry::class
     )
-    private lateinit var bitmaps: Map<FoodType, Bitmap?>
+    private var bitmaps: Map<FoodType, Bitmap?>? = null
 
     private val gameOverView = GameOverView(this)
     private val slider = Slider(this)
@@ -42,11 +42,11 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         set(isOver) {
             field = isOver
             if (isOver) {
-                stopGame()
+                fruitSpawner?.end()
                 gameOverView.show(score)
             } else {
                 gameOverView.hide()
-                startGame()
+                fruitSpawner?.resume()
             }
         }
 
@@ -56,7 +56,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
             fruitSpawner?.setSpeedFromScore(score.caught)
             scoreBoard.score = score
 
-            if (score.dropped >= 3) gameOver()
+            if (score.dropped >= 3) gameOver = true
         }
 
     init {
@@ -81,36 +81,51 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         gameOverView.draw(canvas)
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        scoreBoard = ScoreBoard(this, Point(x = 50, y = 75))
-        trolley = loadTrolley()
-
+    private fun resume() {
         gameThread = GameThread(this, holder)
-        gameThread?.running = true
-        gameThread?.start()
-
-        loadBitmaps()
-        startGame()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
+    private fun pause() {
         var retry = true
         while (retry) {
             try {
                 gameThread?.running = false
-                fruitSpawner?.end()
+                fruitSpawner?.pause()
 
                 // Parent thread must wait until the end of GameThread.
                 gameThread?.join()
+
+                gameThread = null
+
+                retry = false
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-
-            retry = true
         }
     }
+
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        scoreBoard = ScoreBoard(this, Point(x = 50, y = 75), score)
+        trolley = loadTrolley()
+
+        if (bitmaps == null) {
+            bitmaps = loadBitmaps()
+        }
+
+        if (fruitSpawner == null) {
+            fruitSpawner = FruitSpawner(this, bitmaps!!)
+        }
+
+        resume()
+        gameThread?.running = true
+        gameThread?.start()
+
+        if (!gameOver) fruitSpawner?.resume()
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+
+    override fun surfaceDestroyed(holder: SurfaceHolder) = pause()
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event ?: return false
@@ -141,23 +156,9 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         score = score.copy(dropped = score.dropped + 1)
     }
 
-    private fun startGame() {
-        fruitSpawner = FruitSpawner(this, bitmaps)
-        fruitSpawner?.start()
-    }
-
     private fun restartGame() {
         score = Score()
         gameOver = false
-    }
-
-    private fun stopGame() {
-        fruitSpawner?.end()
-        fruitSpawner = null
-    }
-
-    private fun gameOver() {
-        gameOver = true
     }
 
     private fun loadTrolley(): Trolley {
@@ -179,13 +180,12 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
         return Trolley(trolleyBitmap, backwardsTrolleyBitmap, startPoint)
     }
 
-    private fun loadBitmaps() {
-        bitmaps = fruitTypes.map { fruitType ->
+    private fun loadBitmaps() =
+        fruitTypes.map { fruitType ->
             fruitType to fruitType.findAnnotation<Sprite>()?.layout?.let { resId ->
                 BitmapFactory
                         .decodeResource(resources, resId)
                         .scaleToWidth(width / 12)
             }
         }.toMap()
-    }
 }

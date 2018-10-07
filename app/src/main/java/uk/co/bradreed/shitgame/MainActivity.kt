@@ -8,6 +8,8 @@ import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 
 class MainActivity : Activity() {
 
+    private var gameSurface: GameSurface? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -15,6 +17,9 @@ class MainActivity : Activity() {
 
         requestWindowFeature(FEATURE_NO_TITLE)
 
-        setContentView(GameSurface(this))
+        gameSurface = GameSurface(this)
+
+        setContentView(gameSurface)
     }
 }
+
