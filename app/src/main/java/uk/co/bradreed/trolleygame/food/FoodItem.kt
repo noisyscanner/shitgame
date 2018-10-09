@@ -67,8 +67,8 @@ abstract class FoodItem(private var gameSurface: GameSurface,
                     location.x <= trolleyLoc.x + trolleyWidth - bitmap.width
         }
 
-    private fun getNextLocation(distanceTravelled: Double) = location + Point(
-            x = (distanceTravelled * movingVector.dx / movingVector.length).toInt(),
-            y = (distanceTravelled * movingVector.dy / movingVector.length).toInt()
+    private fun getNextLocation(distanceTravelled: Double) = location + Vector(
+            dx = (distanceTravelled * movingVector.dx / movingVector.length).toInt(),
+            dy = (distanceTravelled * movingVector.dy / movingVector.length).toInt()
     )
 }

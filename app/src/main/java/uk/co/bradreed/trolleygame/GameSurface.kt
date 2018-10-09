@@ -105,7 +105,7 @@ class GameSurface(context: Context) : SurfaceView(context), SurfaceHolder.Callba
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        scoreBoard = ScoreBoard(this, Point(x = 50, y = 75), score)
+        scoreBoard = ScoreBoard(resources, Point(x = 50, y = 75), score)
         trolley = loadTrolley()
 
         if (bitmaps == null) {
