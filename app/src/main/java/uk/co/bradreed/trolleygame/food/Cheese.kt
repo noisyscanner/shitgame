@@ -7,8 +7,8 @@ import uk.co.bradreed.trolleygame.Sprite
 import uk.co.bradreed.trolleygame.structs.Point
 
 @Sprite(layout = R.drawable.cheese, probability = 0.2)
-class Cheese(gameSurface: GameSurface, bitmap: Bitmap, initialLocation: Point) :
-        FoodItem(gameSurface, bitmap, initialLocation) {
+class Cheese(bitmap: Bitmap, initialLocation: Point) :
+        FoodItem(bitmap, initialLocation) {
 
     override val value = 1
 

@@ -1,7 +1,7 @@
 package uk.co.bradreed.trolleygame
 
 import android.graphics.Bitmap
-import uk.co.bradreed.trolleygame.food.FoodItem
+import uk.co.bradreed.trolleygame.food.*
 import uk.co.bradreed.trolleygame.structs.Point
 import java.lang.Math.log10
 import java.lang.Math.pow
@@ -10,11 +10,22 @@ import kotlin.reflect.full.primaryConstructor
 
 typealias FoodType = KClass<out FoodItem>
 
-class FruitSpawner(private val surface: GameSurface, private val bitmaps: Map<FoodType, Bitmap?>) {
+class FoodSpawner(private val surfaceWidth: Int, private val bitmapManager: BitmapManager) {
 
-    private var thread: FruitSpawnerThread? = null
+    private val foodTypes = listOf(
+            Apple::class,
+            Banana::class,
+            Bread::class,
+            Broccoli::class,
+            Cheese::class,
+            Orange::class,
+            Sausage::class,
+            Strawberry::class
+    )
 
-    private class FruitSpawnerThread(private val spawner: FruitSpawner) : Thread() {
+    private val bitmaps by lazy { bitmapManager.getFoodBitmaps(foodTypes) }
+
+    private class FruitSpawnerThread(private val spawner: FoodSpawner) : Thread() {
         private var running = false
         private var millisBetween = 1000L
 
@@ -45,11 +56,11 @@ class FruitSpawner(private val surface: GameSurface, private val bitmaps: Map<Fo
         }
     }
 
-    private val generator by lazy { RandomFoodGenerator(bitmaps.keys.toList()) }
+    private var thread: FruitSpawnerThread? = null
+    private val generator by lazy { RandomFoodGenerator(foodTypes) }
 
     var fruit = listOf<FoodItem>()
     private val visibleFruit get() = fruit.filter { !it.destroyMe }
-
 
     fun resume() {
         thread = FruitSpawnerThread(this)
@@ -57,6 +68,7 @@ class FruitSpawner(private val surface: GameSurface, private val bitmaps: Map<Fo
     }
 
     fun pause() {
+        fruit = listOf()
         thread?.end()
     }
 
@@ -71,20 +83,18 @@ class FruitSpawner(private val surface: GameSurface, private val bitmaps: Map<Fo
         }
     }
 
-    private fun createFruit(): FoodItem? {
-        return generator.randomFood?.let { foodType ->
+    private fun createFruit(): FoodItem? =
+        generator.randomFood?.let { foodType ->
             bitmaps[foodType]?.let { bitmap ->
                 foodType.primaryConstructor?.call(
-                        surface,
                         bitmap,
                         getRandomSpawnPointForBitmap(bitmap)
                 )
             }
         }
-    }
 
     private fun getRandomSpawnPointForBitmap(bitmap: Bitmap) = Point(
-            x = (0..(surface.width - bitmap.width)).random(),
+            x = (0..(surfaceWidth - bitmap.width)).random(),
             y = 0 - bitmap.height
     )
 

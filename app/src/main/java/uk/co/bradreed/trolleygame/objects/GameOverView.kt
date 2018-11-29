@@ -1,16 +1,16 @@
 package uk.co.bradreed.trolleygame.objects
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.support.v4.content.res.ResourcesCompat
 import uk.co.bradreed.trolleygame.GameObject
-import uk.co.bradreed.trolleygame.GameSurface
 import uk.co.bradreed.trolleygame.R
 import uk.co.bradreed.trolleygame.structs.Score
+import uk.co.bradreed.trolleygame.structs.Size
 
-class GameOverView(private val gameSurface: GameSurface) : GameObject {
+class GameOverView(private val context: Context, private val gameSurfaceSize: Size) : GameObject {
 
-    private var score: Score? = null
+    var score: Score? = null
 
     companion object {
         private const val TEXT_HEIGHT = 75f
@@ -18,15 +18,11 @@ class GameOverView(private val gameSurface: GameSurface) : GameObject {
 
     private val paint = Paint().apply {
         textSize = TEXT_HEIGHT
-        color = ResourcesCompat.getColor(gameSurface.resources, R.color.sainsOrange, null)
+        color = context.resources.getColor(R.color.sainsOrange)
     }
 
     fun show(score: Score) {
         this.score = score
-    }
-
-    fun hide() {
-        score = null
     }
 
     override fun draw(canvas: Canvas) {
@@ -53,8 +49,8 @@ class GameOverView(private val gameSurface: GameSurface) : GameObject {
 
         canvas.drawText(
                 text,
-                gameSurface.width / 2 - textWidth / 2,
-                gameSurface.height / 2f + line * TEXT_HEIGHT,
+                gameSurfaceSize.width / 2 - textWidth / 2,
+                gameSurfaceSize.height / 2f + line * TEXT_HEIGHT,
                 paint
         )
     }

@@ -2,31 +2,41 @@ package uk.co.bradreed.trolleygame.objects
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
+import android.util.DisplayMetrics
 import uk.co.bradreed.trolleygame.GameObject
 import uk.co.bradreed.trolleygame.R
 import uk.co.bradreed.trolleygame.structs.Point
 
-class Trolley(private val forwardsBitmap: Bitmap,
-              private val backwardsBitmap: Bitmap,
-              var location: Point) : GameObject {
+class Trolley(private val rightFacingBitmap: Bitmap, var location: Point) : GameObject {
 
     companion object {
         const val DRAWABLE = R.drawable.trolley
     }
 
     enum class Direction {
-        FORWARDS,
-        BACKWARDS
+        RIGHT,
+        LEFT
     }
 
-    private var direction = Direction.FORWARDS
+    private val leftFacingBitmap = Bitmap.createBitmap(
+            rightFacingBitmap,
+            0,
+            0,
+            rightFacingBitmap.width,
+            rightFacingBitmap.height,
+            Matrix().apply { preScale(-1f, 1f) },
+            false
+    ).apply { density = DisplayMetrics.DENSITY_DEFAULT }
+
+    private var direction = Direction.RIGHT
 
     private val currentBitmap get() = when (direction) {
-        Direction.FORWARDS -> forwardsBitmap
-        Direction.BACKWARDS -> backwardsBitmap
+        Direction.RIGHT -> rightFacingBitmap
+        Direction.LEFT -> leftFacingBitmap
     }
 
-    val width get() = forwardsBitmap.width
+    val width get() = currentBitmap.width
 
     override fun draw(canvas: Canvas) {
         canvas.drawBitmap(currentBitmap, location.x.toFloat(), location.y.toFloat(), null)
@@ -34,8 +44,8 @@ class Trolley(private val forwardsBitmap: Bitmap,
 
     fun moveTo(x: Int) {
         direction = when {
-            x < location.x -> Direction.BACKWARDS
-            x > location.x -> Direction.FORWARDS
+            x < location.x -> Direction.LEFT
+            x > location.x -> Direction.RIGHT
             else -> direction
         }
 

@@ -1,6 +1,7 @@
 package uk.co.bradreed.trolleygame
 
 import android.graphics.Canvas
+import android.provider.SyncStateContract.Helpers.update
 import android.view.SurfaceHolder
 
 class GameThread(private val gameSurface: GameSurface,
